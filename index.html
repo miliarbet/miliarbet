@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login Sederhana</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    body {
+      background-color: #121212;
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      padding: 20px;
+    }
+    .card {
+      background-color: #1f1f1f;
+      border: 1px solid #333;
+      border-radius: 10px;
+      color: #fff;
+    }
+    .btn-custom {
+      background-color: #4caf50;
+      color: #fff;
+      border: none;
+    }
+    .btn-custom:hover {
+      background-color: #45a049;
+    }
+    .form-label,
+    .form-control::placeholder,
+
+      color: #fff;
+    }
+    .form-control {
+      background-color: #2c2c2c;
+      border: 1px solid #444;
+    }
+    #container2 {
+      display: none;
+    }
+    #error {
+      color: #ff4d4d;
+    }
+  </style>
+</head>
+<body>
+  <div id="loginForm" class="container mt-5">
+    <div class="card p-4 mx-auto" style="max-width:80%;">
+      <h3 class="mb-4">Login</h3>
+      <div class="mb-3">
+        <label for="username" class="form-label">Username</label>
+        <input type="text" id="username" class="form-control" placeholder="Masukkan username">
+      </div>
+      <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" id="password" class="form-control" placeholder="Masukkan password">
+      </div>
+      <div class="mb-3" id="error"></div>
+      <button class="btn btn-custom w-100" onclick="login()">Login</button>
+    </div>
+  </div>
+
+<div id="container2" class="container mt-5">
+  <div class="card p-4 mx-auto" style="max-width:95%;">
+<h6 class="mb-4 text-center small">
+  Spam OTP adalah tindakan mengirim kode verifikasi (OTP) berulang kali ke nomor seorang tanpa izin untuk mengganggu.
+</h6>
+    <div class="mb-3">
+      <label for="target" class="form-label">Target</label>
+      <input type="number" id="target" class="form-control" placeholder="ex : 08xxx">
+    </div>
+    <div class="mb-3" id="error"></div>
+    <button class="btn btn-custom w-100" onclick="start()">START</button>
+  </div>
+    <div class="card p-4 mx-auto" style="margin-top:20px;max-width:95%;">
+<h6 class="mb-4 text-center">
+  OUTPUT
+</h6>
+<h6 id="output" class="mb-4 text-center small">
+</h6>
+  </div>
+  <div class="card p-4 mx-auto" style="margin-top:20px;max-width:95%;">
+  <h6 class="mb-4 text-center">
+  ERROR
+</h6>
+<h6 id="errorForm" class="mb-4 text-center small text-danger"></h6>
+  </div>
+  
+<div class="card p-4 mx-auto" style="margin-top:20px;max-width:95%;">
+  <h6 class="mb-4 text-center small">Aktivitas pengiriman spam SMS atau OTP secara berulang tanpa izin merupakan pelanggaran hukum di banyak yurisdiksi dan dapat berakibat pada tuntutan pidana maupun perdata terhadap pelakunya. Segala tindakan penyalahgunaan sistem ini untuk tujuan yang melanggar hukum sepenuhnya menjadi tanggung jawab pengguna masing-masing. Pihak pengembang maupun penyedia layanan ini tidak bertanggung jawab atas segala kerugian, kerusakan, tuntutan hukum, atau konsekuensi lain yang timbul akibat penyalahgunaan oleh pihak ketiga. Sistem ini hanya ditujukan untuk keperluan edukasi, penelitian keamanan, serta pengujian terhadap nomor milik pribadi atau sistem yang sah, dengan persetujuan dari pemilik nomor terkait. Dengan menggunakan layanan ini, Anda menyetujui untuk mematuhi seluruh regulasi yang berlaku di wilayah hukum Anda dan membebaskan pengembang dari segala bentuk klaim, gugatan, atau kerugian yang mungkin timbul di kemudian hari.</h6>
+</div>
+</div>
+
+<script>
+let isRunning = false; // status timer
+let outputTimer = null;
+
+function start() {
+  const button = document.querySelector("button[onclick='start()']");
+  const target = document.getElementById("target").value.trim();
+
+  if (!isRunning) {
+if (target === "") {
+  document.getElementById("errorForm").textContent = "Silakan isi nomor target terlebih dahulu!";
+  return;
+}
+const apps = [
+  "GO-JEK", "TOKO-KU", "GRAB", "SHOPEE", "LAZADA", "BUKALAPAK", "TOKOPEDIA", "OVO", "DANA", "GOPAY",
+  "LINKAJA", "TRAVELOKA", "AIRBNB", "TIKET.COM", "BLIBLI", "JNE", "J&T", "SICEPAT", "KLIKINDOMARET", "ALFAMART",
+  "PAYFAZZ", "FLIP", "KUDO", "QASIR", "MIDTRANS", "XENDIT", "BCA", "MANDIRI", "BRI", "BNI",
+  "SEABANK", "NEOBANK", "DOKU", "PAYPAL", "LINE", "WHATSAPP", "TELEGRAM", "WECHAT", "DISCORD", "INSTAGRAM",
+  "FACEBOOK", "TIKTOK", "YOUTUBE", "NETFLIX", "SPOTIFY", "VIDIO", "VIU", "MOLA", "GENFLIX", "INDIHOME",
+  "MYIM3", "XL", "SMARTFREN", "AXIS", "BY.U", "HALO", "TRI", "CATCHPLAY", "GOOGLE", "APPLE",
+  "UBER", "GRABFOOD", "GOFOOD", "SHOPEEFOOD", "KFC", "MCD", "PIZZA HUT", "BURGER KING", "RAJA KUPON", "SAYURBOX",
+  "RUANGGURU", "ZENIUS", "BRAINLY", "QUIPPER", "CAMPUS", "SIMPATIKA", "PPOB.ID", "KUDO PAY", "MITRA BUKA", "DANA MITRA",
+  "KIOSON", "REKBERKU", "NICEPAY", "PRIMA", "PULSAKU", "PASARPULSA", "JAGO", "DIGIBANK", "BTPN", "MAYBANK",
+  "HSBC", "CIMB", "DBS", "OCBC", "UOB", "STANDARD CHARTERED", "MEGA", "PERMATA", "BANK JAGO", "BANK NEO"
+];
+
+const httpStatuses = [
+  { code: 200, text: "OK" },
+  { code: 201, text: "Created" },
+  { code: 400, text: "Bad Request" },
+  { code: 401, text: "Unauthorized" },
+  { code: 403, text: "Forbidden" },
+  { code: 404, text: "Not Found" },
+  { code: 408, text: "Request Timeout" },
+  { code: 429, text: "Too Many Requests" },
+  { code: 500, text: "Internal Server Error" },
+  { code: 502, text: "Bad Gateway" },
+  { code: 503, text: "Service Unavailable" }
+];
+
+const outputTexts = apps.flatMap(app => [
+  `${app} sedang mengirim OTP ke ${target}...`,
+  `Kode OTP dari ${app} berhasil dikirim ke ${target}!`
+]);
+
+// shuffle apps biar acak
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+const shuffledApps = shuffle([...apps]);  // clone biar apps asli ga berubah
+
+// fungsi random ambil 1 item
+function pickRandom(array) {
+  return array[Math.floor(Math.random() * array.length)];
+}
+
+// generate errorTexts random
+const errorTexts = httpStatuses.map(status => {
+  const randomApp = pickRandom(apps);
+  return `${status.code} ${status.text}: ${randomApp} permintaan OTP ke ${target} ${status.text.toLowerCase()}`;
+});
+
+    let i = 0;
+    let j = 0;
+
+    button.textContent = "STOP";
+    isRunning = true;
+
+    outputTimer = setInterval(() => {
+      document.getElementById("output").textContent = outputTexts[i];
+      document.getElementById("errorForm").textContent = errorTexts[j];
+
+      i = (i + 1) % outputTexts.length;
+      j = (j + 1) % errorTexts.length;
+    }, 2000);
+
+  } else {
+    // STOP
+    clearInterval(outputTimer);
+    isRunning = false;
+    button.textContent = "START";
+    document.getElementById("output").textContent = "";
+    document.getElementById("errorForm").textContent = "Proses dihentikan oleh user.";
+  }
+}
+</script>
+
+  <script>
+    function login() {
+  const user = document.getElementById('username').value.trim();
+  const pass = document.getElementById('password').value.trim();
+  const error = document.getElementById('error');
+
+  const validUser = "123";
+  const validPass = "123";
+
+  if (user === validUser && pass === validPass) {
+    document.getElementById('loginForm').style.display = "none";
+    document.getElementById('container2').style.display = "block";
+    
+    Swal.fire({
+      position: 'top-end',   // kanan atas
+      icon: 'success',
+      title: 'Login berhasil!',
+      showConfirmButton: false,
+      timer: 2000,
+      toast: true
+    });
+  } else {
+    error.textContent = "Username atau password salah!";
+  }
+}
+  </script>
+</body>
+  </html>
